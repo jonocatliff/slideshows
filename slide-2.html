@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide 2 — Claude Code as a Plugin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .slide { background: var(--surface-dark); }
+
+    .content-wrapper {
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      padding: 72px 80px 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: start;
+    }
+
+    .eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 16px; }
+
+    h1 {
+      font-family: var(--serif); font-size: clamp(34px, 4vw, 50px);
+      font-weight: 400; line-height: 1.08; letter-spacing: -1px;
+      color: var(--on-dark); margin-bottom: 16px;
+    }
+
+    .lead { font-size: 16px; line-height: 1.5; color: var(--on-dark-soft); margin-bottom: 32px; max-width: 380px; }
+
+    .cap-list { display: flex; flex-direction: column; gap: 14px; }
+    .cap-item { display: flex; align-items: flex-start; gap: 12px; }
+    .cap-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+    .cap-text { font-size: 14px; color: var(--on-dark-soft); line-height: 1.5; }
+    .cap-text strong { color: var(--on-dark); font-weight: 500; }
+
+    /* Plugin panel */
+    .plugin-panel { background: var(--surface-dark-elevated); border-radius: 12px; overflow: hidden; border: 1px solid rgba(250,249,245,0.06); }
+    .panel-titlebar { background: var(--surface-dark-soft); padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(250,249,245,0.04); }
+    .panel-titlebar span { font-size: 12px; font-weight: 500; color: var(--on-dark-soft); margin-left: 8px; }
+    .panel-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+    .plugin-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; background: var(--surface-dark-soft); border: 1px solid rgba(250,249,245,0.04); }
+    .plugin-row.active { border-color: rgba(204,120,92,0.4); background: rgba(204,120,92,0.06); }
+
+    .plugin-icon-wrap { width: 36px; height: 36px; border-radius: 8px; background: var(--surface-dark-elevated); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .plugin-info { flex: 1; }
+    .plugin-name { font-size: 13px; font-weight: 500; color: var(--on-dark); margin-bottom: 1px; }
+    .plugin-desc { font-size: 11px; color: var(--on-dark-soft); }
+
+    .plugin-toggle { width: 32px; height: 18px; border-radius: 9999px; background: var(--surface-dark-elevated); border: 1px solid rgba(250,249,245,0.1); position: relative; flex-shrink: 0; }
+    .plugin-toggle.on { background: var(--primary); border-color: var(--primary); }
+    .plugin-toggle-knob { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: rgba(250,249,245,0.4); top: 2px; left: 2px; }
+    .plugin-toggle.on .plugin-toggle-knob { left: 16px; background: white; }
+
+    .hint-bar { margin-top: 12px; padding: 14px 16px; background: rgba(204,120,92,0.07); border: 1px solid rgba(204,120,92,0.18); border-radius: 10px; display: flex; gap: 10px; align-items: flex-start; }
+    .hint-bar p { font-size: 13px; color: var(--on-dark-soft); line-height: 1.5; }
+
+    @media (max-width: 768px) { .content-wrapper { grid-template-columns: 1fr; padding: 40px 24px 64px; } }
+  </style>
+</head>
+<body>
+
+  <nav class="slide-nav dark">
+    <a href="index.html" class="nav-brand">
+      <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2L15.2 12.8L22 6L15.2 14L26 14L15.2 14.8L22 22L14.8 15.2L14 26L13.2 15.2L6 22L12.8 14.8L2 14L12.8 13.2L6 6L13.2 12.8L14 2Z" fill="#cc785c"/>
+      </svg>
+      <span class="nav-brand-name">Antigravity</span>
+    </a>
+    <div class="nav-controls">
+      <a href="slide-1.html" class="nav-btn" aria-label="Previous">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <span class="nav-counter">2 / 4</span>
+      <a href="slide-3.html" class="nav-btn" aria-label="Next">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <div class="slide">
+    <div class="content-wrapper">
+
+      <div>
+        <div class="eyebrow">02 — Plugin</div>
+        <h1>Claude Code lives inside Antigravity.</h1>
+        <p class="lead">Not a separate app. A plugin — toggled on, wired into your project.</p>
+
+        <div class="cap-list">
+          <div class="cap-item">
+            <div class="cap-dot" style="background:var(--primary);"></div>
+            <p class="cap-text"><strong>Instant context.</strong> Reads your codebase the moment it's enabled.</p>
+          </div>
+          <div class="cap-item">
+            <div class="cap-dot" style="background:var(--accent-teal);"></div>
+            <p class="cap-text"><strong>Side-by-side.</strong> Terminal panel in the same window — no switching.</p>
+          </div>
+          <div class="cap-item">
+            <div class="cap-dot" style="background:var(--accent-amber);"></div>
+            <p class="cap-text"><strong>Composable.</strong> Mix with other plugins in one flow.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="plugin-panel">
+          <div class="panel-titlebar">
+            <div class="dot red"></div><div class="dot amber"></div><div class="dot green"></div>
+            <span>Antigravity — Plugins</span>
+          </div>
+          <div class="panel-body">
+
+            <div class="plugin-row active">
+              <div class="plugin-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+                  <path d="M14 2L15.2 12.8L22 6L15.2 14L26 14L15.2 14.8L22 22L14.8 15.2L14 26L13.2 15.2L6 22L12.8 14.8L2 14L12.8 13.2L6 6L13.2 12.8L14 2Z" fill="#cc785c"/>
+                </svg>
+              </div>
+              <div class="plugin-info">
+                <div class="plugin-name">Claude Code</div>
+                <div class="plugin-desc">AI pair programmer &amp; agent</div>
+              </div>
+              <div class="plugin-toggle on"><div class="plugin-toggle-knob"></div></div>
+            </div>
+
+            <div class="plugin-row">
+              <div class="plugin-icon-wrap">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <circle cx="5" cy="10" r="2.5" stroke="#a09d96" stroke-width="1.4"/>
+                  <circle cx="15" cy="5" r="2.5" stroke="#a09d96" stroke-width="1.4"/>
+                  <circle cx="15" cy="15" r="2.5" stroke="#a09d96" stroke-width="1.4"/>
+                  <path d="M7.5 10h3.5M12 7l3-2M12 13l3 2" stroke="#a09d96" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="plugin-info"><div class="plugin-name">Git &amp; Branches</div><div class="plugin-desc">Inline diff, blame, history</div></div>
+              <div class="plugin-toggle on"><div class="plugin-toggle-knob"></div></div>
+            </div>
+
+            <div class="plugin-row">
+              <div class="plugin-icon-wrap">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <rect x="3" y="3" width="14" height="14" rx="3" stroke="#a09d96" stroke-width="1.4"/>
+                  <path d="M7 10l2.5 2.5L13 7" stroke="#5db8a6" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="plugin-info"><div class="plugin-name">Test Runner</div><div class="plugin-desc">Jest, Vitest, pytest</div></div>
+              <div class="plugin-toggle on"><div class="plugin-toggle-knob"></div></div>
+            </div>
+
+            <div class="plugin-row">
+              <div class="plugin-icon-wrap">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <path d="M10 3L17 10L10 17L3 10Z" stroke="#a09d96" stroke-width="1.4" fill="none"/>
+                  <circle cx="10" cy="10" r="2.5" fill="#a09d96"/>
+                </svg>
+              </div>
+              <div class="plugin-info"><div class="plugin-name">Deploy</div><div class="plugin-desc">Vercel, Railway, Fly.io</div></div>
+              <div class="plugin-toggle"><div class="plugin-toggle-knob"></div></div>
+            </div>
+
+            <div class="plugin-row">
+              <div class="plugin-icon-wrap">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 6h12M4 10h8M4 14h10" stroke="#a09d96" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="plugin-info"><div class="plugin-name">Linter &amp; Formatter</div><div class="plugin-desc">ESLint, Prettier, Ruff</div></div>
+              <div class="plugin-toggle"><div class="plugin-toggle-knob"></div></div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="hint-bar">
+          <svg width="16" height="16" viewBox="0 0 28 28" fill="none" style="flex-shrink:0;margin-top:1px;">
+            <path d="M14 2L15.2 12.8L22 6L15.2 14L26 14L15.2 14.8L22 22L14.8 15.2L14 26L13.2 15.2L6 22L12.8 14.8L2 14L12.8 13.2L6 6L13.2 12.8L14 2Z" fill="#cc785c"/>
+          </svg>
+          <p>Claude Code is on by default. Everything else is optional.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') window.location.href = 'slide-3.html';
+      if (e.key === 'ArrowLeft')  window.location.href = 'slide-1.html';
+    });
+  </script>
+</body>
+</html>

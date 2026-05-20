@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code — Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #cc785c; --ink: #141413; --muted: #6c6a64; --muted-soft: #8e8b82;
+      --hairline: #e6dfd8; --canvas: #faf9f5; --surface-card: #efe9de;
+      --surface-dark: #181715; --surface-dark-elevated: #252320; --surface-dark-soft: #1f1e1b;
+      --on-dark: #faf9f5; --on-dark-soft: #a09d96;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--surface-dark);
+      color: var(--on-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; z-index: 100;
+      background: rgba(24,23,21,0.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(250,249,245,0.06);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-brand-name { font-size: 14px; font-weight: 500; color: var(--on-dark); }
+    .nav-controls { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 9999px;
+      background: var(--surface-dark-elevated); border: 1px solid rgba(250,249,245,0.08);
+      color: var(--on-dark); text-decoration: none; cursor: pointer;
+    }
+    .nav-btn.disabled { opacity: 0.25; pointer-events: none; }
+    .nav-counter { font-size: 12px; font-weight: 500; letter-spacing: 1px; color: var(--on-dark-soft); min-width: 52px; text-align: center; }
+
+    /* Main */
+    main {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 88px 24px 64px;
+    }
+
+    .hero-eyebrow {
+      font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--primary); margin-bottom: 20px; text-align: center;
+    }
+
+    h1 {
+      font-family: var(--serif); font-size: clamp(44px, 6vw, 72px);
+      font-weight: 400; line-height: 1.0; letter-spacing: -1.5px;
+      color: var(--on-dark); text-align: center; margin-bottom: 16px;
+    }
+
+    .subtitle {
+      font-size: 16px; color: var(--on-dark-soft); line-height: 1.5;
+      text-align: center; margin-bottom: 64px; max-width: 400px;
+    }
+
+    /* Grid */
+    .slides-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 16px; width: 100%; max-width: 800px;
+    }
+
+    .slide-card {
+      background: var(--surface-dark-elevated);
+      border-radius: 12px; padding: 28px;
+      text-decoration: none; color: var(--on-dark);
+      border: 1px solid rgba(250,249,245,0.06);
+      transition: border-color 0.15s, background 0.15s;
+      display: flex; flex-direction: column; gap: 12px;
+      position: relative; overflow: hidden;
+    }
+    .slide-card:hover { border-color: rgba(204,120,92,0.4); background: #2a2825; }
+    .slide-card:hover .arrow { color: var(--primary); }
+
+    .slide-num { font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); }
+    .slide-icon { width: 48px; height: 48px; }
+    .slide-title { font-family: var(--serif); font-size: 22px; font-weight: 400; letter-spacing: -0.3px; }
+    .arrow { font-size: 13px; font-weight: 500; color: var(--on-dark-soft); display: flex; align-items: center; gap: 6px; margin-top: 4px; transition: color 0.15s; }
+
+    footer { padding: 32px; font-size: 12px; color: var(--muted); text-align: center; }
+
+    @media (max-width: 560px) { .slides-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-brand">
+      <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2L15.2 12.8L22 6L15.2 14L26 14L15.2 14.8L22 22L14.8 15.2L14 26L13.2 15.2L6 22L12.8 14.8L2 14L12.8 13.2L6 6L13.2 12.8L14 2Z" fill="#cc785c"/>
+      </svg>
+      <span class="nav-brand-name">Antigravity</span>
+    </a>
+    <div class="nav-controls">
+      <a class="nav-btn disabled">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <span class="nav-counter">Intro</span>
+      <a href="slide-1.html" class="nav-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero-eyebrow">Antigravity · Claude Code</div>
+    <h1>Building with<br/>Claude Code</h1>
+    <p class="subtitle">From zero to your first prompt — in four slides.</p>
+
+    <div class="slides-grid">
+
+      <a href="slide-1.html" class="slide-card">
+        <div class="slide-num">01</div>
+        <svg class="slide-icon" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="20" stroke="#cc785c" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <circle cx="24" cy="24" r="7" fill="#252320" stroke="#cc785c" stroke-width="1.5"/>
+          <path d="M24 17L26.5 10L24 12.5L21.5 10Z" fill="#cc785c"/>
+          <circle cx="36" cy="13" r="3" fill="#e8a55a"/>
+          <circle cx="12" cy="36" r="2.5" fill="#5db8a6"/>
+        </svg>
+        <div class="slide-title">What is Antigravity?</div>
+        <div class="arrow">View <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a href="slide-2.html" class="slide-card">
+        <div class="slide-num">02</div>
+        <svg class="slide-icon" viewBox="0 0 48 48" fill="none">
+          <rect x="6" y="9" width="36" height="30" rx="5" fill="#252320" stroke="#cc785c" stroke-width="1.5"/>
+          <rect x="14" y="17" width="18" height="3" rx="1.5" fill="#5db8a6"/>
+          <rect x="14" y="23" width="12" height="3" rx="1.5" fill="#a09d96"/>
+          <rect x="14" y="29" width="15" height="3" rx="1.5" fill="#a09d96"/>
+          <circle cx="40" cy="9" r="7" fill="#181715" stroke="#cc785c" stroke-width="1.5"/>
+          <path d="M37 9h6M40 6v6" stroke="#cc785c" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="slide-title">Claude Code as a Plugin</div>
+        <div class="arrow">View <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a href="slide-3.html" class="slide-card">
+        <div class="slide-num">03</div>
+        <svg class="slide-icon" viewBox="0 0 48 48" fill="none">
+          <path d="M6 17 Q6 13 10 13 L20 13 L23 9 L38 9 Q42 9 42 13 L42 37 Q42 41 38 41 L10 41 Q6 41 6 37 Z" fill="#252320" stroke="#cc785c" stroke-width="1.5"/>
+          <rect x="14" y="22" width="18" height="2.5" rx="1.25" fill="#5db8a6"/>
+          <rect x="14" y="27.5" width="12" height="2.5" rx="1.25" fill="#a09d96"/>
+          <rect x="14" y="33" width="16" height="2.5" rx="1.25" fill="#a09d96"/>
+          <circle cx="34" cy="35" r="7" fill="#cc785c"/>
+          <path d="M31 35h6M34 32v6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="slide-title">Adding a Project Folder</div>
+        <div class="arrow">View <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a href="slide-4.html" class="slide-card">
+        <div class="slide-num">04</div>
+        <svg class="slide-icon" viewBox="0 0 48 48" fill="none">
+          <rect x="4" y="28" width="34" height="16" rx="5" fill="#252320" stroke="#cc785c" stroke-width="1.5"/>
+          <rect x="10" y="34" width="16" height="4" rx="2" fill="#a09d96"/>
+          <circle cx="36" cy="36" r="5" fill="#cc785c"/>
+          <path d="M34 36l1.5 1.5L38 34" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M38 6L42 17L30 13L36 11Z" fill="#cc785c"/>
+          <path d="M30 13L18 25" stroke="#cc785c" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2"/>
+          <circle cx="16" cy="27" r="2.5" fill="#5db8a6"/>
+        </svg>
+        <div class="slide-title">Sending a Prompt</div>
+        <div class="arrow">View <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>Use ← → arrow keys to navigate</footer>
+
+  <script>
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') window.location.href = 'slide-1.html';
+    });
+  </script>
+
+</body>
+</html>

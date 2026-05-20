@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide 4 — Sending a Prompt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .slide { background: var(--surface-dark); }
+
+    .content-wrapper {
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      padding: 72px 80px 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: start;
+    }
+
+    .eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--primary); margin-bottom: 16px; }
+
+    h1 {
+      font-family: var(--serif); font-size: clamp(34px, 4vw, 50px);
+      font-weight: 400; line-height: 1.08; letter-spacing: -1px;
+      color: var(--on-dark); margin-bottom: 16px;
+    }
+
+    .lead { font-size: 16px; line-height: 1.5; color: var(--on-dark-soft); max-width: 380px; margin-bottom: 32px; }
+
+    .anatomy { display: flex; flex-direction: column; gap: 14px; margin-bottom: 0; }
+    .anatomy-row { display: flex; gap: 12px; align-items: flex-start; }
+    .anatomy-badge { flex-shrink: 0; background: rgba(204,120,92,0.12); border: 1px solid rgba(204,120,92,0.25); border-radius: 6px; padding: 3px 7px; font-size: 11px; font-weight: 500; font-family: var(--mono); color: var(--primary); margin-top: 1px; }
+    .anatomy-text { font-size: 13px; color: var(--on-dark-soft); line-height: 1.5; }
+    .anatomy-text strong { color: var(--on-dark); font-weight: 500; }
+
+    /* Terminal */
+    .terminal-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+    .terminal { background: var(--surface-dark-soft); border-radius: 12px; overflow: hidden; border: 1px solid rgba(250,249,245,0.05); }
+    .term-bar { background: var(--surface-dark-elevated); padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(250,249,245,0.04); }
+    .term-bar span { font-size: 12px; font-weight: 500; color: var(--on-dark-soft); margin-left: 8px; }
+    .term-body { padding: 18px 20px; font-family: var(--mono); font-size: 13px; line-height: 1.65; }
+    .t-prompt { color: var(--accent-teal); }
+    .t-muted { color: var(--on-dark-soft); }
+    .t-coral { color: var(--primary); }
+    .t-amber { color: var(--accent-amber); }
+    .t-success { color: #5db872; }
+    .t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--primary); border-radius: 1px; animation: blink 1.1s step-end infinite; vertical-align: text-bottom; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Prompt input */
+    .prompt-input-wrap { background: var(--surface-dark-elevated); border-radius: 12px; border: 1px solid rgba(204,120,92,0.3); overflow: hidden; }
+    .prompt-input-top { padding: 14px 18px; min-height: 64px; }
+    .prompt-input-text { font-family: var(--sans); font-size: 15px; color: var(--on-dark); line-height: 1.5; }
+    .prompt-cursor { display: inline-block; width: 2px; height: 16px; background: var(--primary); border-radius: 1px; animation: blink 1.1s step-end infinite; vertical-align: text-bottom; margin-left: 1px; }
+    .prompt-input-bottom { padding: 9px 14px; background: rgba(0,0,0,0.15); border-top: 1px solid rgba(250,249,245,0.04); display: flex; align-items: center; justify-content: space-between; }
+    .prompt-hints { display: flex; gap: 10px; }
+    .prompt-hint { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--on-dark-soft); }
+    .hint-key { background: var(--surface-dark-soft); border: 1px solid rgba(250,249,245,0.08); border-radius: 4px; padding: 1px 5px; font-family: var(--mono); font-size: 10px; }
+    .send-btn { display: flex; align-items: center; gap: 6px; background: var(--primary); color: white; font-size: 13px; font-weight: 500; border: none; border-radius: 7px; padding: 7px 14px; cursor: pointer; }
+
+    /* Three mini cards */
+    .mini-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .mini-card { background: var(--surface-dark-elevated); border-radius: 10px; padding: 18px; border: 1px solid rgba(250,249,245,0.05); }
+    .mini-card-icon { margin-bottom: 10px; }
+    .mini-card-title { font-size: 13px; font-weight: 500; color: var(--on-dark); margin-bottom: 3px; }
+    .mini-card-body { font-size: 12px; color: var(--on-dark-soft); line-height: 1.5; }
+
+    /* Coral CTA */
+    .cta-band {
+      background: var(--primary); border-radius: 12px; padding: 36px 48px;
+      display: flex; align-items: center; justify-content: space-between; gap: 32px;
+      max-width: 1200px; margin: 0 auto 0; width: 100%;
+    }
+    .cta-h2 { font-family: var(--serif); font-size: 28px; font-weight: 400; letter-spacing: -0.3px; color: white; margin-bottom: 4px; }
+    .cta-sub { font-size: 14px; color: rgba(255,255,255,0.72); }
+    .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: white; color: var(--primary); font-size: 14px; font-weight: 500; padding: 11px 22px; border-radius: 8px; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
+
+    @media (max-width: 900px) {
+      .content-wrapper { grid-template-columns: 1fr; padding: 40px 24px 64px; }
+      .mini-cards { grid-template-columns: 1fr; }
+      .cta-band { flex-direction: column; padding: 28px 24px; margin: 0 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="slide-nav dark">
+    <a href="index.html" class="nav-brand">
+      <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2L15.2 12.8L22 6L15.2 14L26 14L15.2 14.8L22 22L14.8 15.2L14 26L13.2 15.2L6 22L12.8 14.8L2 14L12.8 13.2L6 6L13.2 12.8L14 2Z" fill="#cc785c"/>
+      </svg>
+      <span class="nav-brand-name">Antigravity</span>
+    </a>
+    <div class="nav-controls">
+      <a href="slide-3.html" class="nav-btn" aria-label="Previous">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <span class="nav-counter">4 / 4</span>
+      <a class="nav-btn disabled" aria-label="Next">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <div class="slide">
+    <div class="content-wrapper">
+
+      <div>
+        <div class="eyebrow">04 — Prompt</div>
+        <h1>Apples an bananas.</h1>
+        <p class="lead">Type what you want. Claude Code reads your codebase and acts.</p>
+
+        <div class="anatomy">
+          <div class="anatomy-row">
+            <div class="anatomy-badge">verb</div>
+            <p class="anatomy-text"><strong>Start with an action.</strong> Add, Fix, Refactor, Write tests for.</p>
+          </div>
+          <div class="anatomy-row">
+            <div class="anatomy-badge">scope</div>
+            <p class="anatomy-text"><strong>Name the thing.</strong> A file, a function, a feature.</p>
+          </div>
+          <div class="anatomy-row">
+            <div class="anatomy-badge">context</div>
+            <p class="anatomy-text"><strong>Add constraints.</strong> "without breaking tests", "using the pattern in auth.ts".</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal-wrap">
+
+        <div class="prompt-input-wrap">
+          <div class="prompt-input-top">
+            <div class="prompt-input-text">
+              Add a <span style="color:var(--accent-teal);">rate-limit middleware</span> to <span style="color:var(--accent-amber);">src/app.ts</span>, using the pattern in <span style="color:var(--accent-amber);">src/auth.ts</span>, without breaking existing tests<span class="prompt-cursor"></span>
+            </div>
+          </div>
+          <div class="prompt-input-bottom">
+            <div class="prompt-hints">
+              <div class="prompt-hint"><span class="hint-key">⌘ K</span><span>Commands</span></div>
+              <div class="prompt-hint"><span class="hint-key">@</span><span>Files</span></div>
+            </div>
+            <button class="send-btn">
+              Send
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5h11M7 2l4.5 4.5L7 11" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="terminal">
+          <div class="term-bar">
+            <div class="dot red"></div><div class="dot amber"></div><div class="dot green"></div>
+            <span>Claude Code — Terminal</span>
+          </div>
+          <div class="term-body">
+            <div><span class="t-muted">> </span><span class="t-prompt">claude</span> <span style="color:var(--on-dark);">"Add rate-limit middleware…"</span></div>
+            <div style="margin-top:8px;"><span class="t-muted">Reading </span><span class="t-amber">src/app.ts</span><span class="t-muted">, </span><span class="t-amber">src/auth.ts</span><span class="t-muted">, tests/ (14 files)</span></div>
+            <div style="margin-top:8px;padding-left:2px;"><span class="t-muted">1. Install </span><span class="t-amber">express-rate-limit</span></div>
+            <div style="padding-left:2px;"><span class="t-muted">2. Create </span><span class="t-amber">src/middleware/rateLimiter.ts</span></div>
+            <div style="padding-left:2px;"><span class="t-muted">3. Mount after authMiddleware in app.ts</span></div>
+            <div style="margin-top:8px;"><span class="t-success">✓</span> <span class="t-muted">package.json updated</span></div>
+            <div><span class="t-success">✓</span> <span class="t-muted">rateLimiter.ts created</span></div>
+            <div><span class="t-success">✓</span> <span class="t-muted">app.ts patched</span></div>
+            <div><span class="t-success">✓</span> <span class="t-muted">All 14 tests passing</span></div>
+            <div style="margin-top:8px;"><span class="t-coral">Done.</span> <span class="t-cursor"></span></div>
+          </div>
+        </div>
+
+        <div class="mini-cards">
+          <div class="mini-card">
+            <div class="mini-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3L14 11L22 11L15.5 16L18 24L12 19L6 24L8.5 16L2 11L10 11Z" fill="rgba(204,120,92,0.2)" stroke="rgba(204,120,92,0.6)" stroke-width="1"/></svg>
+            </div>
+            <div class="mini-card-title">Reads & reasons</div>
+            <p class="mini-card-body">Full codebase before writing a line.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" fill="rgba(93,184,166,0.1)" stroke="rgba(93,184,166,0.5)" stroke-width="1"/><path d="M7 12l3 3 7-7" stroke="rgba(93,184,166,0.8)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="mini-card-title">Writes & runs</div>
+            <p class="mini-card-body">Files edited. Tests run automatically.</p>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" fill="rgba(232,165,90,0.1)" stroke="rgba(232,165,90,0.5)" stroke-width="1"/><path d="M12 8v5l3 3" stroke="rgba(232,165,90,0.8)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="mini-card-title">Iterates</div>
+            <p class="mini-card-body">Self-corrects if tests fail.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="padding: 0 80px 80px; max-width: 1360px; margin: 0 auto; width: 100%;">
+      <div class="cta-band">
+        <div>
+          <div class="cta-h2">You're ready to build.</div>
+          <p class="cta-sub">Open Antigravity. Drop in a project. Send your first prompt.</p>
+        </div>
+        <a href="index.html" class="cta-btn">
+          Back to overview
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') window.location.href = 'slide-3.html';
+    });
+  </script>
+</body>
+</html>
